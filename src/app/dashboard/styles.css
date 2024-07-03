@@ -1,0 +1,12 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.search-input{
+    background-color: #d6d6d6;
+}
+
+.input_group{
+    width: 30em;
+}
