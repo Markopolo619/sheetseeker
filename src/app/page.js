@@ -227,7 +227,7 @@ export default function Home() {
             {" "}
             {/* Register link */}
             <Link
-              className="inline-block align-baseline font-bold text-sm py-3 text-blue-500 hover:text-blue-800"
+              className="inline-block align-baseline font-bold text-sm py-3 text-red-700 hover:text-black"
               href="/auth/signup"
             >
               Don&apos;t have an account? Register Now

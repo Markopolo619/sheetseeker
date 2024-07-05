@@ -274,7 +274,7 @@ const Page = () => {
             {" "}
             {/* Have an account? Sign In link */}
             <Link
-              className="inline-block py-2 align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              className="inline-block py-2 align-baseline font-bold text-sm text-red-700 hover:text-black"
               href="/"
             >
               Have an account? Sign In

@@ -1,7 +1,7 @@
 const Button = ({ onSubmit, text, loading = false, disabled }) => {
   return (
     <button
-      className="flex justify-center bg-blue-500 mb-2 w-28 h-10 items-center btn-submit hover:bg-white border-blue-500 hover:text-blue-500 hover:border-2 rounded-lg text-white font-bold py-1 px-3 focus:outline-none focus:shadow-outline"
+      className="flex justify-center bg-black mb-2 w-28 h-10 items-center btn-submit hover:bg-white border-black hover:text-black hover:border-2 rounded-lg text-white font-bold py-1 px-3 focus:outline-none focus:shadow-outline"
       onClick={onSubmit}
       disabled={disabled}
       type="submit"

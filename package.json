@@ -15,7 +15,8 @@
     "nextjs-routes": "^2.2.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-firebase-hooks": "^5.1.1"
+    "react-firebase-hooks": "^5.1.1",
+    "react-spinners": "^0.14.1"
   },
   "devDependencies": {
     "eslint": "^8",
