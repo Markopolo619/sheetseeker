@@ -12,6 +12,12 @@ const Dashboard = () => {
 
   const router = useRouter();
 
+  const user = auth.currentUser;
+  if (!user) {
+    router.replace('/')
+    return null;
+  }
+
   const handleSignOut = async () => {
     try {
       await signOut(auth);
@@ -139,7 +145,9 @@ const Dashboard = () => {
             </nav>
           </div>
         </div>
-        <div className="mt-16 mx-auto max-w-md"></div>
+        <div className="mt-16 mx-auto max-w-md">
+          <h1>Hello World</h1>
+        </div>
       </>
 
       {/* Start of User Account Dropdown */}

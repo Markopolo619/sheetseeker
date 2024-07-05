@@ -16,12 +16,14 @@ import {
 const Page = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailDomain, setEmailDomain] = useState("");
   const [error, setError] = useState(null);
   const [password, setPassword] = useState("");
   const [showLoader, setShowLoader] = useState(false);
   const [repeatPassword, setRepeatPassword] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const allowedDomain = '@tdmc.co.za';
   const router = useRouter();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

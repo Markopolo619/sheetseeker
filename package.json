@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@firebase/firestore": "^4.6.3",
-    "firebase": "^10.12.2",
     "next": "14.2.4",
     "nextjs-routes": "^2.2.1",
     "react": "^18",
