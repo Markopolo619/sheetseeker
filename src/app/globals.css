@@ -13,7 +13,7 @@ body{
 
 .spinner {
   animation-name: spin;
-  animation-duration: 500ms;
+  animation-duration: 9900ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }

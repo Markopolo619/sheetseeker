@@ -48,7 +48,7 @@ export default function Home() {
     } catch (error) {
       setGoogleLoading(false);
       console.error("Error signing in with Google:", error);
-      setError("Error sigining up with Google");
+      setError("Error sigining up with Google, please try again");
     }
   };
 
