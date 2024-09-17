@@ -37,53 +37,52 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container">
-      <>
-        <div className="nav-container pt-4 h-auto flex flex-row justify-end">
-          <nav className="flex flex-row-reverse justify-start w-full">
-            <button
-              className="block focus:border-2 focus:border-gray-600 h-10 w-10 absolute rounded-full overflow-hidden border-2 border-gray-600 focus:outline-none "
-              onClick={toggleAccountDropdown}
-            >
-              <Image
-                className="h-full w-full object-cover"
-                src={"/userAccount.svg"}
-                alt="User Avatar"
-                width={40}
-                height={40}
-              />
-            </button>
-            {accountDropdownVisible && (
-              <div className="dropdown z-10 mr-2 mt-11 absolute right-0 py-2 w-48 bg-white rounded-lg shadow-lg">
-                <Link
-                  href="/privacy"
-                  className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
-                >
-                  Privacy Policy
-                </Link>
-                <Link
-                  href="/terms"
-                  className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
-                >
-                  T&Cs
-                </Link>
-                <Link
-                  href="/settings"
-                  className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
-                >
-                  Account Settings
-                </Link>
-                <button
-                  className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white"
-                  onClick={handleSignOut}
-                >
-                  Sign Out
-                </button>
-              </div>
-            )}
-          </nav>
-        </div>
-        <div className="search-items">
+    <div className="main">
+        <div className="nav-container w-full pt-4 h-auto flex flex-row justify-end pr-10">
+        <nav className="flex flex-col pr-10">
+          <button
+            className="block focus:border-2 focus:border-gray-600 h-10 w-10 absolute rounded-full overflow-hidden border-2 border-gray-600 focus:outline-none "
+            onClick={toggleAccountDropdown}
+          >
+            <Image
+              className="h-full w-full object-cover"
+              src={"/userAccount.svg"}
+              alt="User Avatar"
+              width={40}
+              height={40}
+            />
+          </button>
+          {accountDropdownVisible && (
+            <div className="dropdown z-10 mr-2 mt-11 absolute right-0 py-2 w-48 bg-white rounded-lg shadow-lg">
+              <Link
+                href="/privacy"
+                className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms"
+                className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+              >
+                T&Cs
+              </Link>
+              <Link
+                href="/settings"
+                className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+              >
+                Account Settings
+              </Link>
+              <button
+                className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
+        </nav>
+      </div>
+         <div className="search-items">
           <div className="search-bar mt-10 flex flex-row justify-center w-full">
             <form className="w-6/12 mt-5">
               <div className="relative">
@@ -120,7 +119,7 @@ const Dashboard = () => {
               </div>
             </form>
           </div>
-          <div className="search-params flex justify-center pt-3">
+          <div className="search-params flex flex-row justify-center pt-3">
             <nav className="flex flex-col pr-10">
               <button
                 className="transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-110 hover:scale-110 justify-center mb-2 w-28 h-10 items-center btn-submit hover:bg-transparent border-black hover:text-black hover:border-2 text-white font-bold py-1 px-3 focus:outline-none focus:shadow-outline block focus:border-2 absolute bg-black rounded-lg"
@@ -146,9 +145,10 @@ const Dashboard = () => {
             </nav>
           </div>
         </div>
-        <div className="mt-16 text-center mx-auto max-w-lg">
-          <div className="authenticateDrivebtn mt-28">
-            <button className="bg-transparent hover:bg-gray-300 text-black border-4 border-black font-bold py-3 px-3 rounded-lg">
+
+         <div className="mt-16 text-center mx-auto max-w-lg">
+          <div className="authenticateDrivebtn mt-28 text-center">
+            <button className="bg-transparent  hover:bg-gray-300 text-black border-4 border-black font-bold py-3 px-3 rounded-lg">
             <Link
               className="flex"
               href=""
@@ -183,8 +183,7 @@ const Dashboard = () => {
             </Link>
             </button>
           </div>
-        </div>
-      </>
+        </div> *
 
       {/* Start of User Account Dropdown */}
     </div>

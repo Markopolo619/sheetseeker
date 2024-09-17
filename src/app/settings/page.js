@@ -8,16 +8,25 @@ import Image from "next/image";
 import "./styles.css";
 
 const Page = () => {
+  const user = auth.currentUser; // Get the current user
   const [accountDropdownVisible, setAccountDropdownVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const router = useRouter();
 
-  const user = auth.currentUser;
+  // Function to modify the profile image size in the URL
+  const modifyImageUrlSize = (url, newSize) => {
+    return url.replace(/s\d+-c/, `s${newSize}-c`);
+  };
+
+  // If no user is authenticated, redirect to the sign-up page
   if (!user) {
     router.replace("/");
     return null;
   }
+
+  // Modify the profile image URL only if the user is available
+  const profileImageUrl = modifyImageUrlSize(user.photoURL, 900);
 
   const handleSignOut = async () => {
     try {
@@ -35,6 +44,7 @@ const Page = () => {
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
+
   return (
     <div className="main">
       <div className="nav-container w-full pt-4 h-auto flex flex-row justify-end pr-10">
@@ -82,7 +92,21 @@ const Page = () => {
         </nav>
       </div>
       <main className="mt-10">
-        <div className="bg-white content-center  p-8 rounded-lg shadow-lg max-w-4xl mx-auto my-8">
+        <div className="bg-white content-center p-8 rounded-lg shadow-lg max-w-4xl mx-auto my-8">
+          <div className="flex flex-col items-center">
+            <h3 className="font-sans text-4xl pb-10">Hi, {user.displayName}</h3>
+            <div className="border-black border-2 rounded-full text-white w-32 h-32">
+              <Image
+                src={profileImageUrl}
+                width={128}
+                height={128}
+                layout="responsive"
+                className="rounded-full"
+                alt="User Profile Photo"
+              />
+            </div>
+          </div>
+          
         </div>
       </main>
     </div>

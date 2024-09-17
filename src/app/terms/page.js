@@ -21,7 +21,7 @@ const Page = () => {
   };
 
   return (
-    <div className="container">
+    <div className="main">
       <div className="nav-container w-full pt-4 h-auto flex flex-row justify-end pr-10">
         <nav className="flex flex-col pr-10">
           <button
