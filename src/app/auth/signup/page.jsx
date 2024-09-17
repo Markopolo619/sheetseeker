@@ -6,7 +6,7 @@ import { useState} from "react";
 import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
 import Button from "@/app/components/auth-button";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 import {
   auth,
   db,
@@ -22,6 +22,7 @@ const Page = () => {
   const [showLoader, setShowLoader] = useState(false);
   const [repeatPassword, setRepeatPassword] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
+  const auth = getAuth();
 
   const allowedDomain = '@tdmc.co.za';
   const router = useRouter();
@@ -141,101 +142,15 @@ const Page = () => {
           onSubmit={handleFormSubmit} /* Signup auth function */
           className="bg-white shadow-xl rounded px-8 pt-6 pb-8 mb-4"
         >
-          <p>Register your account</p>
+          <p className="text-lg text-center font-bold">Register your account</p>
           &nbsp;
-          <div className="mb-4">
-            {" "}
-            {/* Name Label and input */}
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
-            >
-              Name
-            </label>
-            <input
-              autoComplete="new-password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="name"
-              type="text"
-              value={name}
-              placeholder="John Doe"
-              onChange={(e) => setName(e.target.value)}
-              
-            />
-          </div>
-          <div className="mb-4">
-            {" "}
-            {/* Email label and input */}
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
-            >
-              Email
-            </label>
-            <input
-            autoComplete="new-password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="email"
-              value={email}
-              placeholder="example@provider.com"
-              onChange={(e) => setEmail(e.target.value)}
-
-            />
-          </div>
-          <div className="mb-6">
-            {" "}
-            {/* Password label and input */}
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              autoComplete="new-password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type="password"
-              value={password}
-              placeholder="******************"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="mb-6">
-            {" "}
-            {/* Repeat Password label and input */}
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Repeat Password
-            </label>
-            <input
-              autoComplete="new-password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="repeatPassword"
-              type="password"
-              value={repeatPassword}
-              placeholder="******************"
-              onChange={(e) => setRepeatPassword(e.target.value)}
-            />
-          </div>
+          
           {error /* Display error message */ && (
             <div className="text-center mb-4">
               <p className="text-red-500 text-sm">{error}</p>
             </div>
           )}
-          <div className="flex items-center justify-around pb-2">
-            {" "}
-            {/* Submit button */} {/* Submit button */}
-            <Button
-              text="Sign Up"
-              onSubmit={handleSubmit}
-              loading={showLoader}
-              disabled={showLoader}
-            />
-          </div>
+
           <div className="flex items-center justify-around">
             <button // Google Sign Up Button 
             /* Google sign in button */

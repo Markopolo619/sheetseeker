@@ -52,52 +52,52 @@ export default function Home() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null); // Clear previous errors
-    if (email === "") {
-      setError("Please enter an email");
-      return;
-    } else if (!emailRegex.test(email)) {
-      setError("Invalid email format. Please enter a valid email address.");
-      return;
-    }
+   const handleSubmit = async (e) => {
+     e.preventDefault();
+     setError(null); // Clear previous errors
+     if (email === "") {
+       setError("Please enter an email");
+       return;
+     } else if (!emailRegex.test(email)) {
+       setError("Invalid email format. Please enter a valid email address.");
+       return;
+     }
 
-    if (password === "") {
-      setError("Please enter a password");
-      return;
-    }
+     if (password === "") {
+       setError("Please enter a password");
+       return;
+     }
 
-    try {
-      setShowLoader(true);
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      console.log("User signed in:", user);
-      setShowLoader(false);
-      Router.push("/dashboard");
-    } catch (error) {
-      setShowLoader(false);
-      if (error.code === "auth/user-not-found") {
-        setError(
-          "User not found. Please check your email or sign up for an account"
-        );
-      } else if (error.code === "auth/wrong-password") {
-        setError("Inocorrect password. Please try again.");
-      } else {
-        setError(
-          "Login failed. Please check your credentials or sign up for an account"
-        );
-      }
-    }
-  };
+     try {
+       setShowLoader(true);
+       const userCredential = await signInWithEmailAndPassword(
+         auth,
+         email,
+         password
+       );
+       const user = userCredential.user;
+       console.log("User signed in:", user);
+       setShowLoader(false);
+       Router.push("/dashboard");
+     } catch (error) {
+       setShowLoader(false);
+       if (error.code === "auth/user-not-found") {
+         setError(
+           "User not found. Please check your email or sign up for an account"
+         );
+       } else if (error.code === "auth/wrong-password") {
+         setError("Inocorrect password. Please try again.");
+       } else {
+         setError(
+           "Login failed. Please check your credentials or sign up for an account"
+         );
+       }
+     }
+   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-  };
+   const handleFormSubmit = async (e) => {
+     e.preventDefault();
+   };
 
   return (
     <div className="body">
@@ -106,63 +106,14 @@ export default function Home() {
           onSubmit={handleFormSubmit}
           className="bg-white shadow-xl rounded px-8 pt-6 pb-8 mb-4"
         >
-          <p>Sign into your account</p>
+          <p className="text-center text-lg">Sign into your account</p>
           &nbsp;
-          <div className="mb-4">
-            {" "}
-            {/* Email label and input */}
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              autoComplete="new-password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="email"
-              placeholder="example@provider.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              aria-required
-            />
-          </div>
-          <div className="mb-6">
-            {" "}
-            {/* Password label and input */}
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              autoComplete="new-password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type="password"
-              value={password}
-              placeholder="******************"
-              onChange={(e) => setPassword(e.target.value)}
-              aria-required
-            />
-          </div>
+          
           {error /* Display error message */ && (
             <div className="text-center mb-4">
               <p className="text-red-500 text-sm">{error}</p>
             </div>
           )}
-          <div className="flex items-center justify-around">
-            {" "}
-            {/* Submit button */}
-            <Button
-              text="Sign In"
-              onSubmit={handleSubmit}
-              loading={showLoader}
-              disabled={showLoader}
-            />
-          </div>
           <div className="flex items-center justify-around">
             <button // Google Sign Up Button
               /* Google sign in button */

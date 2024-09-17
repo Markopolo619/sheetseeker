@@ -39,12 +39,6 @@ const Page = () => {
           {accountDropdownVisible && (
             <div className="dropdown z-10 mr-2 mt-11 absolute right-0 py-2 w-48 bg-white rounded-lg shadow-lg">
               <Link
-                href="/settings"
-                className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
-              >
-                Account Settings
-              </Link>
-              <Link
                 href="/dashboard"
                 className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
               >
@@ -55,6 +49,12 @@ const Page = () => {
                 className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
               >
                 Privacy Policy
+              </Link>
+              <Link
+                href="/settings"
+                className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+              >
+                Account Settings
               </Link>
               <button
                 className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white"

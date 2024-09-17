@@ -5,6 +5,7 @@ import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import './styles.css'
 
 const Dashboard = () => {
   const [accountDropdownVisible, setAccountDropdownVisible] = useState(false);
@@ -38,8 +39,8 @@ const Dashboard = () => {
   return (
     <div className="container">
       <>
-        <div className="nav-container w-full pt-4 h-auto flex flex-row justify-end pr-10">
-          <nav className="flex flex-col pr-10">
+        <div className="nav-container pt-4 h-auto flex flex-row justify-end">
+          <nav className="flex flex-row-reverse justify-start w-full">
             <button
               className="block focus:border-2 focus:border-gray-600 h-10 w-10 absolute rounded-full overflow-hidden border-2 border-gray-600 focus:outline-none "
               onClick={toggleAccountDropdown}
@@ -55,12 +56,6 @@ const Dashboard = () => {
             {accountDropdownVisible && (
               <div className="dropdown z-10 mr-2 mt-11 absolute right-0 py-2 w-48 bg-white rounded-lg shadow-lg">
                 <Link
-                  href="/settings"
-                  className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
-                >
-                  Account Settings
-                </Link>
-                <Link
                   href="/privacy"
                   className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
                 >
@@ -71,6 +66,12 @@ const Dashboard = () => {
                   className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
                 >
                   T&Cs
+                </Link>
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+                >
+                  Account Settings
                 </Link>
                 <button
                   className="block w-full text-left px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white"
