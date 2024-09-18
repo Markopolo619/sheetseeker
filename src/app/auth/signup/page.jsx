@@ -6,7 +6,7 @@ import { useState} from "react";
 import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
 import Button from "@/app/components/auth-button";
-import { createUserWithEmailAndPassword, updateProfile, getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, getAuth } from "firebase/auth";
 import {
   auth,
   db,
@@ -14,97 +14,11 @@ import {
   signInWithPopup,
 } from "@/app/firebase/config";
 const Page = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailDomain, setEmailDomain] = useState("");
   const [error, setError] = useState(null);
-  const [password, setPassword] = useState("");
-  const [showLoader, setShowLoader] = useState(false);
-  const [repeatPassword, setRepeatPassword] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
   const auth = getAuth();
 
-  const allowedDomain = '@tdmc.co.za';
   const router = useRouter();
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  const handleSubmit = async (e) => {
-    /* Signup auth function*/
-    e.preventDefault();
-    setError(null); // Clear previous errors
-
-    if (name === "") {
-      setError("Please enter your name");
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      // Check if email is valid
-      setError("Invalid email format. Please enter a valid email address.");
-      return;
-    }
- if (password === "") {
-  setError("Please enter a password");
-  return;
- }
- if (repeatPassword === "") {
-      // Check if repeat password is empty
-      setError("Please confirm your password");
-      return;
-    }
-
-    if (password !== repeatPassword) {
-      // Check if passwords match
-      setError("Passwords don't match. Please try again.");
-      return;
-    }
-
-    if (password.length < 6) {
-      // Check if password is at least 6 characters long
-      setError("Password must be at least 6 characters long.");
-      return;
-    }
-
-
-
-    try {
-      // Try signing up
-      setShowLoader(true); // Show loading spinner
-      const userCredential = await createUserWithEmailAndPassword(
-        // Sign up user with email and password
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user; // Get user object
-
-      await updateProfile(user, {
-        // Update user profile
-        displayName: name,
-      });
-
-      await setDoc(doc(db, "users", user.uid), {
-        // Create user document in Firestore
-        name: name,
-        email: email,
-        createdAt: new Date(),
-      });
-
-      
-      console.log("User signed up and profile update:", user); // Log user object
-      setShowLoader(false); // Hides loading spinner
-
-      router.push("/dashboard"); // Redirects to dashboard upon a successful login
-    } catch (error) {
-      // Catches errors if any
-      setShowLoader(false); // Hides loading spinner
-      if (error.code === "auth/email-already-in-use") {
-        // Check if email is already in use
-        setError(
-          "Email already exists. Please try again with a different email."
-        );
-      }
-    }
-  };
 
   const handleGoogleSignIn = async () => {
     try {
