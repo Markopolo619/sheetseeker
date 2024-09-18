@@ -22,23 +22,14 @@ const Page = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const currentUser = auth.currentUser;
-      setUser(currentUser);
-      
-      // Redirect if no user is found
-      if (!currentUser) {
-        router.push('/');
-      } else {
-        // Fetch email from Firestore
-        const userDocRef = doc(db, 'users', currentUser.uid);
-        const userDoc = await getDoc(userDocRef);
+      if (!currentUser) return router.push('/');
 
-        if (userDoc.exists()) {
-          setUserEmail(userDoc.data().email); // Assuming Firestore stores email
-        } else {
-          console.error('No user document found.');
-        }
-      }
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      const userDoc = await getDoc(userDocRef);
+      setUser(currentUser);
+      setUserEmail(userDoc.exists() ? userDoc.data().email : '');
     };
+
     
     fetchUser();
   }, [router, db]);
@@ -50,7 +41,6 @@ const Page = () => {
   const profileImageUrl = user ? modifyImageUrlSize(user.photoURL, 999) : "/default-avatar.svg";
 
   const handleDeleteAccount = async () => {
-    // Prevent deletion if emails do not match
     if (inputEmail !== userEmail) {
       setError('The email you entered does not match the account email.');
       return;
@@ -58,9 +48,10 @@ const Page = () => {
 
     if (user) {
       try {
-        const userDocRef = doc(db, 'users', user.uid);
-        await deleteDoc(userDocRef);  // Delete user data from Firestore
-        await deleteUser(user);       // Delete user account from Firebase Auth
+        await Promise.all([
+          deleteDoc(doc(db, 'users', user.uid)), // Delete user data from Firestore
+          deleteUser(user), // Delete user account from Firebase Auth
+        ]);
 
         router.push('/');
         console.log('User account and data deleted successfully.');
