@@ -154,7 +154,7 @@ const Dashboard = () => {
 
          <div className="mt-16 text-center mx-auto max-w-lg">
           <div className="authenticateDrivebtn mt-28 text-center">
-            <button className="bg-transparent  hover:bg-gray-300 text-black border-4 border-black font-bold py-3 px-3 rounded-lg">
+            <button className=" bg-transparent  hover:bg-gray-300 text-black border-4 border-black font-bold py-3 px-3 rounded-lg">
             <Link
               className="flex"
               href=""
@@ -185,7 +185,7 @@ const Dashboard = () => {
                   d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
                 ></path>
               </svg>
-              <p>Authenticate Google Drive</p>
+              <p>Google Drive Coming Soon...</p>
             </Link>
             </button>
           </div>
