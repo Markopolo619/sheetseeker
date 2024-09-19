@@ -12,8 +12,14 @@ const Dashboard = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const router = useRouter();
-
   const user = auth.currentUser;
+
+  const modifyImageUrlSize = (url, newSize) =>
+    url.replace(/s(\d+)-c/, `s${newSize}-c`);
+
+  const profileImageUrl = user ? modifyImageUrlSize(user.photoURL, 999) : "/default-avatar.svg";
+
+
   if (!user) {
     router.replace("/");
     return null;
@@ -46,7 +52,7 @@ const Dashboard = () => {
           >
             <Image
               className="h-full w-full object-cover"
-              src={"/userAccount.svg"}
+              src={profileImageUrl}
               alt="User Avatar"
               width={40}
               height={40}

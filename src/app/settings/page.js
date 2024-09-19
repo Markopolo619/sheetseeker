@@ -5,16 +5,18 @@ import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getFirestore, doc, deleteDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, deleteDoc, getDoc } from "firebase/firestore";
 import "./styles.css";
 
 const Page = () => {
-  const [user, setUser] = useState(null); // Initialize user state
+  const [user, setUser] = useState(null);
   const [accountDropdownVisible, setAccountDropdownVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [inputEmail, setInputEmail] = useState(''); // Input email state
-  const [userEmail, setUserEmail] = useState(''); // Store email from Firestore
-  const [error, setError] = useState(''); // Error state for email mismatch
+  const [inputEmail, setInputEmail] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [error, setError] = useState("");
+  const [deleteButtonText, setDeleteButtonText] = useState("Delete Account"); // New state for button text
+  const [isDeleting, setIsDeleting] = useState(false); // State for deletion process
 
   const router = useRouter();
   const db = getFirestore();
@@ -22,15 +24,14 @@ const Page = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const currentUser = auth.currentUser;
-      if (!currentUser) return router.push('/');
+      if (!currentUser) return router.push("/");
 
-      const userDocRef = doc(db, 'users', currentUser.uid);
+      const userDocRef = doc(db, "users", currentUser.uid);
       const userDoc = await getDoc(userDocRef);
       setUser(currentUser);
-      setUserEmail(userDoc.exists() ? userDoc.data().email : '');
+      setUserEmail(userDoc.exists() ? userDoc.data().email : "");
     };
 
-    
     fetchUser();
   }, [router, db]);
 
@@ -40,24 +41,63 @@ const Page = () => {
 
   const profileImageUrl = user ? modifyImageUrlSize(user.photoURL, 999) : "/default-avatar.svg";
 
+  // Animation function for the ellipsis
+  const animateEllipsis = () => {
+    let step = 0;
+    const steps = ["Deleting", "Deleting.", "Deleting..", "Deleting..."];
+    
+    return new Promise((resolve) => {
+      const intervalId = setInterval(() => {
+        setDeleteButtonText(steps[step]);
+        step++;
+
+        // Reset after 4 steps
+        if (step === steps.length) {
+          clearInterval(intervalId);
+          setTimeout(() => {
+            // Reverse animation (removing dots)
+            step = steps.length - 1;
+            const reverseIntervalId = setInterval(() => {
+              setDeleteButtonText(steps[step]);
+              step--;
+
+              if (step < 0) {
+                clearInterval(reverseIntervalId);
+                resolve(); // Animation completed
+              }
+            }, 300);
+          }, 600);
+        }
+      }, 300);
+    });
+  };
+
   const handleDeleteAccount = async () => {
     if (inputEmail !== userEmail) {
-      setError('The email you entered does not match the account email.');
+      setError("The email you entered does not match the account email.");
       return;
     }
 
     if (user) {
       try {
+        setIsDeleting(true);
+        await animateEllipsis(); // Start the ellipsis animation
+
+        // Delete user data from Firestore and Firebase Authentication
         await Promise.all([
-          deleteDoc(doc(db, 'users', user.uid)), // Delete user data from Firestore
-          deleteUser(user), // Delete user account from Firebase Auth
+          deleteDoc(doc(db, "users", user.uid)),
+          deleteUser(user),
         ]);
 
-        router.push('/');
-        console.log('User account and data deleted successfully.');
+        setDeleteButtonText("Deleted!"); // Update button text on success
+        router.push("/"); // Redirect after deletion
+        console.log("User account and data deleted successfully.");
       } catch (error) {
-        console.error('Error deleting user account:', error);
-        setError('An error occurred while deleting your account.');
+        console.error("Error deleting user account:", error);
+        setError("An error occurred while deleting your account.");
+        setDeleteButtonText("Delete Account"); // Reset button text on error
+      } finally {
+        setIsDeleting(false); // End the deletion process
       }
     }
   };
@@ -75,13 +115,14 @@ const Page = () => {
     setAccountDropdownVisible(!accountDropdownVisible);
   };
 
-  const handleclick = () => {
+  const handleClick = () => {
     setIsVisible(!isVisible);
   };
 
+
   const handleHideClick = () => {
     setIsVisible(false);
-    setError(''); // Clear error when closing the modal
+    setError("");
   };
 
   return (
@@ -94,7 +135,7 @@ const Page = () => {
           >
             <Image
               className="h-full w-full object-cover"
-              src={"/userAccount.svg"}
+              src={profileImageUrl}
               alt="User Avatar"
               width={40}
               height={40}
@@ -146,11 +187,14 @@ const Page = () => {
             </div>
           </div>
           <div className="flex flex-row justify-around pt-20">
-            <button onClick={handleSignOut} className="transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-110 hover:scale-110  w-28 h-10 hover:bg-transparent border-black hover:text-black hover:border-2 text-white font-bold py-1 px-3 focus:outline-none focus:shadow-outline block focus:border-2 bg-black rounded-lg">
+            <button
+              onClick={handleSignOut}
+              className="transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-110 hover:scale-110  w-28 h-10 hover:bg-transparent border-black hover:text-black hover:border-2 text-white font-bold py-1 px-3 focus:outline-none focus:shadow-outline block focus:border-2 bg-black rounded-lg"
+            >
               Sign Out
             </button>
             <button
-              onClick={handleclick}
+              onClick={handleClick}
               className="transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-110 hover:scale-110 w-36 h-10 hover:bg-transparent hover:border-red-600 hover:text-red-600 hover:border-2 text-white font-bold py-1 focus:outline-none focus:shadow-outline block focus:border-2 bg-red-600 rounded-lg"
             >
               Delete Account
@@ -191,8 +235,12 @@ const Page = () => {
                 />
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 <div className="btn flex flex-col items-center pt-6">
-                  <button onClick={handleDeleteAccount} className="w-full transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-100 hover:scale-100 h-10 hover:bg-transparent hover:border-red-600 hover:text-red-600 hover:border-2 text-white font-bold py-1 focus:outline-none focus:shadow-outline block focus:border-2 bg-black rounded-lg">
-                    Delete Account
+                  <button
+                    onClick={handleDeleteAccount}
+                    disabled={isDeleting} // Disable button during deletion
+                    className="w-full transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-100 hover:scale-100 h-10 hover:bg-transparent hover:border-red-600 hover:text-red-600 hover:border-2 text-white font-bold py-1 focus:outline-none focus:shadow-outline block focus:border-2 bg-black rounded-lg"
+                  >
+                    {deleteButtonText}
                   </button>
                 </div>
               </div>

@@ -1,15 +1,22 @@
 "use client";
 import React, { useState } from "react";
 import "./styles.css";
+import { auth } from "@/app/firebase/config";
 import Image from "next/image";
 import Link from "next/link";
 
 const Page = () => {
+  const user = auth.currentUser;
   const [accountDropdownVisible, setAccountDropdownVisible] = useState(false);
 
   const toggleAccountDropdown = () => {
     setAccountDropdownVisible(!accountDropdownVisible);
   };
+
+  const modifyImageUrlSize = (url, newSize) =>
+    url.replace(/s(\d+)-c/, `s${newSize}-c`);
+
+  const profileImageUrl = user ? modifyImageUrlSize(user.photoURL, 999) : "/default-avatar.svg";
 
   const handleSignOut = async () => {
     try {
@@ -30,7 +37,7 @@ const Page = () => {
           >
             <Image
               className="h-full w-full object-cover"
-              src={"/userAccount.svg"}
+              src={profileImageUrl}
               alt="User Avatar"
               width={40}
               height={40}
