@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { signOut, deleteUser, getAuth } from "firebase/auth";
+import { signOut, deleteUser } from "firebase/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -15,8 +15,8 @@ const Page = () => {
   const [inputEmail, setInputEmail] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [error, setError] = useState("");
-  const [deleteButtonText, setDeleteButtonText] = useState("Delete Account"); // New state for button text
-  const [isDeleting, setIsDeleting] = useState(false); // State for deletion process
+  const [deleteButtonText, setDeleteButtonText] = useState("Delete Account");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const router = useRouter();
   const db = getFirestore();
@@ -39,23 +39,22 @@ const Page = () => {
     return url.replace(/s\d+-c/, `s${newSize}-c`);
   };
 
-  const profileImageUrl = user ? modifyImageUrlSize(user.photoURL, 999) : "/default-avatar.svg";
+  const profileImageUrl = user
+    ? modifyImageUrlSize(user.photoURL, 999)
+    : "/default-avatar.svg";
 
-  // Animation function for the ellipsis
   const animateEllipsis = () => {
     let step = 0;
     const steps = ["Deleting", "Deleting.", "Deleting..", "Deleting..."];
-    
+
     return new Promise((resolve) => {
       const intervalId = setInterval(() => {
         setDeleteButtonText(steps[step]);
         step++;
 
-        // Reset after 4 steps
         if (step === steps.length) {
           clearInterval(intervalId);
           setTimeout(() => {
-            // Reverse animation (removing dots)
             step = steps.length - 1;
             const reverseIntervalId = setInterval(() => {
               setDeleteButtonText(steps[step]);
@@ -63,7 +62,7 @@ const Page = () => {
 
               if (step < 0) {
                 clearInterval(reverseIntervalId);
-                resolve(); // Animation completed
+                resolve();
               }
             }, 300);
           }, 600);
@@ -73,6 +72,10 @@ const Page = () => {
   };
 
   const handleDeleteAccount = async () => {
+    if (inputEmail == "") {
+      setError("Please actually enter email ╰（‵□′）╯");
+      return;
+    }
     if (inputEmail !== userEmail) {
       setError("The email you entered does not match the account email.");
       return;
@@ -81,23 +84,20 @@ const Page = () => {
     if (user) {
       try {
         setIsDeleting(true);
-        await animateEllipsis(); // Start the ellipsis animation
+        await animateEllipsis();
 
-        // Delete user data from Firestore and Firebase Authentication
         await Promise.all([
           deleteDoc(doc(db, "users", user.uid)),
           deleteUser(user),
         ]);
 
-        setDeleteButtonText("Deleted!"); // Update button text on success
-        router.push("/"); // Redirect after deletion
-        console.log("User account and data deleted successfully.");
+        setDeleteButtonText("Deleted!");
+        router.push("/");
       } catch (error) {
-        console.error("Error deleting user account:", error);
         setError("An error occurred while deleting your account.");
-        setDeleteButtonText("Delete Account"); // Reset button text on error
+        setDeleteButtonText("Delete Account");
       } finally {
-        setIsDeleting(false); // End the deletion process
+        setIsDeleting(false);
       }
     }
   };
@@ -119,7 +119,6 @@ const Page = () => {
     setIsVisible(!isVisible);
   };
 
-
   const handleHideClick = () => {
     setIsVisible(false);
     setError("");
@@ -127,14 +126,14 @@ const Page = () => {
 
   return (
     <div className="main">
-      <div className="nav-container w-full pt-4 h-auto flex flex-row justify-end pr-10">
-        <nav className="flex flex-col pr-10">
+      <div className="nav-container w-full pt-4 h-auto flex justify-end pr-4 sm:pr-10">
+        <nav className="flex">
           <button
-            className="block focus:border-2 focus:border-gray-600 h-10 w-10 absolute rounded-full overflow-hidden border-2 border-gray-600 focus:outline-none"
+            className="block h-10 w-10 sm:h-12 sm:w-12 focus:border-2 focus:border-gray-600 rounded-full overflow-hidden border-2 border-gray-600 focus:outline-none"
             onClick={toggleAccountDropdown}
           >
             <Image
-              className="h-full w-full object-cover"
+              className="object-cover"
               src={profileImageUrl}
               alt="User Avatar"
               width={40}
@@ -142,7 +141,7 @@ const Page = () => {
             />
           </button>
           {accountDropdownVisible && (
-            <div className="dropdown z-10 mr-2 mt-11 absolute right-0 py-2 w-48 bg-white rounded-lg shadow-lg">
+            <div className="dropdown z-10 mr-2 mt-11 absolute right-0 py-2 w-48 sm:w-56 bg-white rounded-lg shadow-lg">
               <Link
                 href="/dashboard"
                 className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
@@ -172,10 +171,12 @@ const Page = () => {
         </nav>
       </div>
       <main className="mt-10 pt-8">
-        <div className="bg-white md:max-w-4xl sm:max-w-2xl content-center p-8 rounded-lg shadow-lg mx-auto">
+        <div className="bg-white p-8 rounded-lg shadow-lg mx-auto max-w-full sm:max-w-lg md:max-w-4xl">
           <div className="flex flex-col items-center">
-            <h3 className="font-sans text-4xl pb-10">Hi, {user?.displayName}</h3>
-            <div className="border-black border-2 rounded-full text-white w-32 h-32">
+            <h3 className="font-sans text-3xl sm:text-4xl pb-6 sm:pb-10">
+              Hi, {user?.displayName}&nbsp;(*^_^*)
+            </h3>
+            <div className="border-black border-2 rounded-full text-white w-24 h-24 sm:w-32 sm:h-32">
               <Image
                 src={profileImageUrl}
                 width={128}
@@ -186,23 +187,23 @@ const Page = () => {
               />
             </div>
           </div>
-          <div className="flex flex-row justify-around pt-20">
+          <div className="flex flex-col sm:flex-row justify-center sm:justify-around pt-12 sm:pt-20">
             <button
               onClick={handleSignOut}
-              className="transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-110 hover:scale-110  w-28 h-10 hover:bg-transparent border-black hover:text-black hover:border-2 text-white font-bold py-1 px-3 focus:outline-none focus:shadow-outline block focus:border-2 bg-black rounded-lg"
+              className="mb-4 sm:mb-0 transition ease-in-out hover:-translate-y-1 duration-300 w-36 sm:w-28 h-10 bg-black text-white font-bold py-2 rounded-lg hover:bg-transparent hover:text-black hover:border-black hover:border-2"
             >
               Sign Out
             </button>
             <button
               onClick={handleClick}
-              className="transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-110 hover:scale-110 w-36 h-10 hover:bg-transparent hover:border-red-600 hover:text-red-600 hover:border-2 text-white font-bold py-1 focus:outline-none focus:shadow-outline block focus:border-2 bg-red-600 rounded-lg"
+              className="transition ease-in-out hover:-translate-y-1 duration-300 w-44 sm:w-36 h-10 bg-red-600 text-white font-bold py-2 rounded-lg hover:bg-transparent hover:text-red-600 hover:border-red-600 hover:border-2"
             >
               Delete Account
             </button>
           </div>
           {isVisible && (
             <div className="fixed left-0 top-0 bg-black bg-opacity-50 w-screen h-screen flex justify-center items-center">
-              <div className="bg-white flex flex-col rounded shadow-md p-4 w-[30%]">
+              <div className="bg-white p-4 rounded shadow-md w-11/12 sm:w-1/2 lg:w-1/3">
                 <button onClick={handleHideClick} className="text-lg">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -210,7 +211,7 @@ const Page = () => {
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
                     stroke="currentColor"
-                    className="size-6"
+                    className="w-6 h-6"
                   >
                     <path
                       strokeLinecap="round"
@@ -221,24 +222,31 @@ const Page = () => {
                 </button>
 
                 <p className="text-center p-4">
-                  Are you sure you want to delete your account? This action is irreversible.
+                  Are you sure you want to delete your account? This action is
+                  irreversible.&nbsp;&nbsp;&nbsp;&nbsp;╯︿╰
                 </p>
-                <label className="pl-3 pb-1 text-sm text-red-400 ">
+                <label className="pl-3 pb-1 text-sm text-red-400">
                   Please retype your email as verification
                 </label>
                 <input
-                  className="shadow appearance-none border-2 border-black rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="placeholder-gray-500 shadow appearance-none border-2 border-black rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="email"
                   value={inputEmail}
                   onChange={(e) => setInputEmail(e.target.value)}
-                  placeholder={user?.email || ""}
+                  placeholder={"-> " + user?.email + " <-"}
                 />
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-                <div className="btn flex flex-col items-center pt-6">
+                {error && (
+                  <p className="text-red-500 text-xs italic py-2">{error}</p>
+                )}
+                <div className="flex justify-center">
                   <button
                     onClick={handleDeleteAccount}
-                    disabled={isDeleting} // Disable button during deletion
-                    className="w-full transition ease-in-out delay-150 hover:-translate-y-1 duration-300 focus:scale-100 hover:scale-100 h-10 hover:bg-transparent hover:border-red-600 hover:text-red-600 hover:border-2 text-white font-bold py-1 focus:outline-none focus:shadow-outline block focus:border-2 bg-black rounded-lg"
+                    disabled={isDeleting}
+                    className={`mt-5 transition ease-in-out hover:-translate-y-1 duration-300 w-48 h-10 ${
+                      isDeleting
+                        ? "bg-gray-600 cursor-not-allowed"
+                        : "bg-red-600"
+                    } text-white font-bold py-2 rounded-lg hover:bg-transparent hover:text-red-600 hover:border-red-600 hover:border-2`}
                   >
                     {deleteButtonText}
                   </button>

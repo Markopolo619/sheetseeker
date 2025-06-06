@@ -10,19 +10,13 @@ import {
   db,
 } from "@/app/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
-import Button from "@/app/components/auth-button";
-import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Home() {
-  const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
-  const [password, setPassword] = useState("");
-  const [showLoader, setShowLoader] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const Router = useRouter();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleGoogleSignIn = async () => {
     try {
@@ -52,49 +46,6 @@ export default function Home() {
     }
   };
 
-   const handleSubmit = async (e) => {
-     e.preventDefault();
-     setError(null); // Clear previous errors
-     if (email === "") {
-       setError("Please enter an email");
-       return;
-     } else if (!emailRegex.test(email)) {
-       setError("Invalid email format. Please enter a valid email address.");
-       return;
-     }
-
-     if (password === "") {
-       setError("Please enter a password");
-       return;
-     }
-
-     try {
-       setShowLoader(true);
-       const userCredential = await signInWithEmailAndPassword(
-         auth,
-         email,
-         password
-       );
-       const user = userCredential.user;
-       console.log("User signed in:", user);
-       setShowLoader(false);
-       Router.push("/dashboard");
-     } catch (error) {
-       setShowLoader(false);
-       if (error.code === "auth/user-not-found") {
-         setError(
-           "User not found. Please check your email or sign up for an account"
-         );
-       } else if (error.code === "auth/wrong-password") {
-         setError("Inocorrect password. Please try again.");
-       } else {
-         setError(
-           "Login failed. Please check your credentials or sign up for an account"
-         );
-       }
-     }
-   };
-
    const handleFormSubmit = async (e) => {
      e.preventDefault();
    };
@@ -114,12 +65,11 @@ export default function Home() {
               <p className="text-red-500 text-sm">{error}</p>
             </div>
           )}
-          <div className="flex items-center justify-around">
+        <div className="flex items-center justify-around">
             <button // Google Sign Up Button
               /* Google sign in button */
               onClick={handleGoogleSignIn}
               disabled={googleLoading}
-              onSubmit={handleSubmit}
               className="flex items-center bg-white hover:bg-gray-100 text-black border-2 border-black font-bold py-2 px-4 rounded-lg"
             >
               {googleLoading ? (
